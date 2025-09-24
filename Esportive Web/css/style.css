@@ -1,0 +1,16 @@
+body {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    background-color: #000;
+}
+.sidebar {
+    width: 0;
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+}
+.sidebar.open {
+    width: 100%;
+}

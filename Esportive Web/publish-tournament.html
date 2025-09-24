@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish Tournament | Esportive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/publish-tournament.css">
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+    
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black text-white px-4 py-6 lg:py-8 flex items-center justify-between">
+        <div class="flex items-center">
+            <a href="tournaments.html" class="text-xl text-white focus:outline-none">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="flex-grow flex justify-center">
+            <img src="../assets/navbar/logo.png" alt="Esportive Logo" class="h-8 lg:h-10">
+        </div>
+        <div class="flex items-center relative">
+            <div id="profile-container">
+                <!-- User icon or profile picture will be dynamically inserted here -->
+            </div>
+            <div id="profile-dropdown" class="absolute right-0 top-10 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                <a href="publish-tournament.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">Publish Tournament</a>
+                <button id="logout-btn" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700">Logout</button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 container mx-auto p-4 flex flex-col items-center justify-center text-center">
+        <div class="max-w-xl mx-auto p-8 rounded-lg">
+            <h1 class="text-2xl font-bold mb-4">Publish Your Tournament</h1>
+            <p class="text-gray-400 mb-6">
+                To ensure all tournament information is accurate and verified, publishing is handled by our administrators. Please contact us on WhatsApp with the details of your tournament.
+            </p>
+            
+            <div class="space-y-4">
+                <a href="https://wa.me/7731987758?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                    <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Contact Admin 1</span>
+                    </button>
+                </a>
+                <a href="https://wa.me/9599202634?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                    <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Contact Admin 2</span>
+                    </button>
+                </a>
+                <a href="https://wa.me/7435800747?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                    <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Contact Admin 3</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="mt-auto py-4">
+        <hr class="border-t border-gray-700 mx-auto w-full my-4">
+        <div class="container mx-auto text-center text-gray-400 flex flex-col items-center">
+            <div class="flex flex-wrap justify-center space-x-4 mb-2 text-xs">
+                <a href="pages/privacy-policy.html" class="hover:text-white">Privacy Policy</a>
+                <a href="pages/terms-of-use.html" class="hover:text-white">Terms Of Use</a>
+                <a href="pages/cookie-policy.html" class="hover:text-white">Cookie Policy</a>
+                <a href="pages/faq.html" class="hover:text-white">FAQ</a>
+            </div>
+            <div class="flex justify-center space-x-4 text-base mb-2">
+                <a href="https://www.instagram.com/esportive.live" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.discord.com" class="hover:text-white"><i class="fab fa-discord"></i></a>
+                <a href="https://www.youtube.com" class="hover:text-white"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.x.com" class="hover:text-white"><i class="fab fa-x"></i></a>
+            </div>
+            <p class="text-xs">&copy; 2025 Esportive. All rights reserved.</p>
+            <!-- "Part Of" Section -->
+            <div class="flex justify-center items-center py-4 space-x-4">
+                <img src="../assets/navbar/logo.png" alt="Esportive Logo" class="h-6">
+                <span class="text-gray-500 font-bold text-sm">PART OF</span>
+                <img src="../assets/footer/flm.png" alt="FLM Logo" class="h-6">
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../js/publish-tournament.js"></script>
+</body>
+</html>
+

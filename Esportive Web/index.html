@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Esportive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex flex-col min-h-screen">
+    <div>
+        <!-- Navbar -->
+        <header class="fixed top-0 left-0 right-0 z-50 bg-black text-white px-4 py-6 lg:py-8 flex items-center justify-between">
+            <div class="flex items-center">
+                <button id="menu-toggle" class="text-xl text-white focus:outline-none">
+                    <i id="menu-icon" class="fas fa-bars transition-transform duration-300"></i>
+                </button>
+            </div>
+            <div class="flex-grow flex justify-center">
+                <img src="assets/navbar/logo.png" alt="Esportive Logo" class="h-8 lg:h-10">
+            </div>
+            <div class="flex items-center">
+                <a href="login.html" class="text-2xl text-white focus:outline-none">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Full-screen Side Menu -->
+        <div id="sidebar" class="fixed top-0 left-0 h-full bg-black z-40 sidebar pt-24">
+            <div class="flex flex-col h-full p-8 text-white">
+                <ul>
+                    <li class="mb-2">
+                        <a href="support@espotive.in" class="text-xl font-semibold block py-2 hover:text-gray-400">Contact Us</a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="work@espotive.in" class="text-xl font-semibold block py-2 hover:text-gray-400">Work With Us</a>
+                    </li>
+                    <li class="mb-2">
+                        <button id="socials-toggle" class="text-xl font-semibold w-full text-left py-2 flex items-center justify-between hover:text-gray-400">
+                            Our Socials
+                            <i class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                        </button>
+                        <ul id="social-links" class="pl-4 mt-1 hidden space-y-2">
+                            <li><a href="#" class="text-base block hover:text-gray-400">Instagram</a></li>
+                            <li><a href="#" class="text-base block hover:text-gray-400">Discord</a></li>
+                            <li><a href="#" class="text-base block hover:text-gray-400">YouTube</a></li>
+                            <li><a href="#" class="text-base block hover:text-gray-400">X</a></li>
+                            <li><a href="#" class="text-base block hover:text-gray-400">WhatsApp Channel</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="relative container mx-auto p-8 pt-24 min-h-[400px] flex items-center justify-center bg-gray-900 bg-cover bg-center rounded-lg shadow-lg"
+             style="background-image: url('https://cdn.discordapp.com/attachments/1104103276703658087/1419828076585418753/Red_and_White_Futuristic_Esport_Game_Presentation_20250923_045805_0000_edit_157421879103998.png?ex=68d32d70&is=68d1dbf0&hm=3aca3539e7a12be0085f68458b1dcca545dd3269cceeee6469a29706166e676d&');">
+            <div class="z-10 bg-black bg-opacity-70 p-6 rounded-lg text-center flex flex-col items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-1.5 h-6 bg-red-600"></div>
+                    <h1 class="text-xl font-bold whitespace-nowrap">Find Tournaments.</h1>
+                </div>
+                <p class="mt-4 text-gray-300 text-sm max-w-2xl">Esportive is india's e-sports tournament finder. Simply browser, choose and register externally. </p>
+                <a href="login.html" class="mt-8 px-4 py-2 text-white border-2 border-red-600 rounded-full transition-all duration-300 hover:bg-red-600">
+                    Sign in To Browse
+                </a>
+            </div>
+        </div>
+
+        <!-- Featured Tournaments Section -->
+        <div class="container mx-auto p-8">
+            <div class="flex flex-col items-start">
+                <div class="flex items-center space-x-2 mb-6">
+                    <div class="w-1.5 h-6 bg-red-600"></div>
+                    <h2 class="text-xl font-bold whitespace-nowrap">Featured Tournaments</h2>
+                </div>
+            </div>
+            <div id="tournaments-container" class="mt-4 flex overflow-x-auto gap-4 py-2">
+                <!-- Tournament cards will be inserted here by JavaScript -->
+                <div class="text-gray-400 animate-pulse">Loading featured tournaments...</div>
+            </div>
+        </div>
+        
+        <!-- Supported Games Section -->
+        <div class="container mx-auto p-8">
+            <div class="flex flex-col items-start">
+                <div class="flex items-center space-x-2 mb-6">
+                    <div class="w-1.5 h-6 bg-red-600"></div>
+                    <h2 class="text-xl font-bold whitespace-nowrap">Supported Games</h2>
+                </div>
+            </div>
+            <div class="mt-4 grid grid-cols-4 gap-2 justify-items-center">
+                <img src="assets/games/bgmi.png" alt="BGMI" class="w-full h-24 object-contain">
+                <img src="assets/games/codm.png" alt="CODM" class="w-full h-24 object-contain">
+                <img src="assets/games/freefire.png" alt="Free Fire" class="w-full h-24 object-contain">
+                <img src="assets/games/coc.png" alt="Clash of Clans" class="w-full h-24 object-contain">
+                <img src="assets/games/brawl_stars.png" alt="Brawl Stars" class="w-full h-24 object-contain">
+                <img src="assets/games/pokemon_unite.png" alt="Pokemon Unite" class="w-full h-24 object-contain">
+                <img src="assets/games/clash_royale.png" alt="Clash Royale" class="w-full h-24 object-contain">
+            </div>
+        </div>
+        
+        <!-- Esportive Feed Section -->
+        <div class="container mx-auto p-8">
+            <div class="flex flex-col items-start">
+                <div class="flex items-center space-x-2 mb-6">
+                    <div class="w-1.5 h-6 bg-red-600"></div>
+                    <h2 class="text-xl font-bold whitespace-nowrap">Esportive Feed</h2>
+                </div>
+            </div>
+            <!-- The video container now uses a grid layout on medium and larger screens -->
+            <div id="videos-container" class="mt-4 flex overflow-x-auto gap-4 py-2 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 md:overflow-visible">
+                <div class="text-gray-400 animate-pulse">Loading latest videos...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="mt-auto py-4">
+        <hr class="border-t border-gray-700 mx-auto w-full my-4">
+        <div class="container mx-auto text-center text-gray-400 flex flex-col items-center">
+            <div class="flex flex-wrap justify-center space-x-4 mb-2 text-xs">
+                <a href="pages/privacy-policy.html" class="hover:text-white">Privacy Policy</a>
+                <a href="pages/terms-of-use.html" class="hover:text-white">Terms Of Use</a>
+                <a href="pages/cookie-policy.html" class="hover:text-white">Cookie Policy</a>
+                <a href="pages/faq.html" class="hover:text-white">FAQ</a>
+            </div>
+            <div class="flex justify-center space-x-4 text-base mb-2">
+                <a href="https://www.instagram.com" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.discord.com" class="hover:text-white"><i class="fab fa-discord"></i></a>
+                <a href="https://www.youtube.com" class="hover:text-white"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.x.com" class="hover:text-white"><i class="fab fa-x"></i></a>
+            </div>
+            <p class="text-xs">&copy; 2025 Esportive. All rights reserved.</p>
+            <div class="flex justify-center items-center py-4 space-x-4">
+                <img src="assets/navbar/logo.png" alt="Esportive Logo" class="h-6">
+                <span class="text-gray-500 font-bold text-sm">PART OF</span>
+                <img src="assets/footer/flm.png" alt="FLM Logo" class="h-6">
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cookie Consent Pop-up -->
+    <div id="cookie-consent" class="fixed bottom-0 left-0 right-0 p-4 z-50 bg-gray-900 text-white text-center shadow-lg rounded-t-lg hidden">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-6">
+            <p class="text-sm">We use cookies to improve your experience. By continuing, you agree to our <a href="pages/cookie-policy.html" class="text-red-600 hover:underline">Cookie Policy</a>.</p>
+            <div class="flex space-x-2">
+                <button id="accept-cookies" class="bg-red-600 text-white px-4 py-2 rounded-full text-sm hover:bg-red-700 transition-colors">Accept</button>
+                <button id="decline-cookies" class="border border-red-600 text-red-600 px-4 py-2 rounded-full text-sm hover:bg-red-600 hover:text-white transition-colors">Decline</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
+

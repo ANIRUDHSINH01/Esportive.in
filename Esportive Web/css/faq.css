@@ -1,0 +1,26 @@
+body {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    background-color: #000;
+}
+details > summary {
+    list-style: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+details > summary::-webkit-details-marker {
+    display: none;
+}
+summary::after {
+    content: '+';
+    font-size: 1.5rem;
+    margin-left: auto;
+    transition: transform 0.2s ease-in-out;
+}
+details[open] > summary::after {
+    content: '−';
+    transform: rotate(180deg);
+}

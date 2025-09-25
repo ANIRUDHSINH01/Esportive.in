@@ -1,14 +1,14 @@
-# Esportive.in - MERN Stack Tournament Platform
+# Esportive.in - Express + EJS Tournament Platform
 
-A full-stack esports tournament platform built with the MERN stack (MongoDB, Express.js, React, Node.js).
+A full-stack esports tournament platform built with Express.js, EJS, and MongoDB.
 
 ## Features
 
 - **User Authentication**: JWT-based authentication with support for email/password and Google OAuth
-- **Google Sign-In Integration**: Both React and static HTML implementations with secure backend verification
+- **Google Sign-In Integration**: Both EJS and static HTML implementations with secure backend verification
 - **Tournament Management**: Create, view, and register for tournaments
 - **Admin Dashboard**: Admin users can publish and manage tournaments
-- **Dual Frontend Support**: Both React SPA and static HTML implementations
+- **Dual Frontend Support**: Both EJS server-side rendering and static HTML implementations
 - **Responsive Design**: Mobile-first responsive UI using TailwindCSS
 - **Real-time Updates**: Tournament participant counts and status updates
 - **Game Filtering**: Filter tournaments by game type
@@ -25,11 +25,9 @@ A full-stack esports tournament platform built with the MERN stack (MongoDB, Exp
 - **Google Auth Library** - OAuth token verification
 
 ### Frontend
-- **React** - Frontend library
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **TailwindCSS** - Styling
-- **Context API** - State management
+- **EJS** - Templating engine for server-side rendering
+- **TailwindCSS** - Styling framework
+- **Vanilla JavaScript** - Client-side functionality
 
 ## Getting Started
 
@@ -112,7 +110,7 @@ To enable Google Sign-In functionality:
 
 ## Access Points
 
-### React Frontend
+### EJS Frontend
 - Main app: `http://localhost:5000`
 - Login page: `http://localhost:5000/login`
 - Tournaments: `http://localhost:5000/tournaments`
@@ -149,13 +147,9 @@ To enable Google Sign-In functionality:
 ├── models/              # Mongoose models
 ├── routes/              # API routes
 ├── middleware/          # Custom middleware
-├── frontend/            # React frontend
-│   ├── public/          # Static files
-│   ├── src/
-│   │   ├── components/  # Reusable components
-│   │   ├── pages/       # Page components
-│   │   ├── context/     # React context
-│   │   └── utils/       # Utility functions
+├── views/               # EJS templates
+│   ├── partials/        # Reusable EJS partials  
+│   └── pages/           # Page templates
 ├── Esportive Web/       # Static HTML pages (alternative frontend)
 │   ├── assets/          # Images and media
 │   ├── css/             # Stylesheets
@@ -182,21 +176,18 @@ The application is designed for single-platform deployment, serving both fronten
 
 2. Deploy to platforms like Heroku, Railway, or any VPS:
    ```bash
-   # The app automatically builds the frontend during deployment
+   # Simple deployment - no build step required for EJS
    npm install
-   npm run build  # Builds the React frontend
-   npm start      # Starts the server serving both frontend and backend
+   npm start      # Starts the server serving EJS templates and backend
    ```
 
 ### Manual Deployment
 1. Install dependencies: `npm install`
-2. Install frontend dependencies: `cd frontend && npm install`
-3. Build the frontend: `npm run build`
-4. Start the server: `npm start`
+2. Start the server: `npm start`
 
 ### Access Points
 After deployment, both frontends are accessible on the same domain:
-- **React SPA**: `https://yourdomain.com/` (main application)
+- **EJS Templates**: `https://yourdomain.com/` (main application)
 - **Static HTML**: `https://yourdomain.com/Esportive%20Web/login.html` (alternative login)
 - **API**: `https://yourdomain.com/api/health` (backend endpoints)
 

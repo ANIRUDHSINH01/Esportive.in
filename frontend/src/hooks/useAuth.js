@@ -120,7 +120,7 @@ export const useAuth = () => {
   };
 
   // Get user profile
-  const getProfile = async () => {
+  const getProfile = useCallback(async () => {
     try {
       const response = await apiCall(`${API_BASE_URL}/auth/profile`);
       if (response.ok) {
@@ -131,14 +131,14 @@ export const useAuth = () => {
     } catch (error) {
       console.error('Get profile error:', error);
     }
-  };
+  }, [apiCall]);
 
   // Check if user is authenticated on mount
   useEffect(() => {
     if (accessToken && !user) {
       getProfile();
     }
-  }, [accessToken, user]);
+  }, [accessToken, user, getProfile]);
 
   return {
     user,

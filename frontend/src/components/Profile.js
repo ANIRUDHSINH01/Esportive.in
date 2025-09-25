@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 const Profile = () => {
-  const { user, logout, apiCall, getProfile } = useAuth();
+  const { user, logout, getProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!user) {
-      fetchProfile();
-    }
-  }, []);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -23,7 +17,13 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getProfile]);
+
+  useEffect(() => {
+    if (!user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   const handleLogout = async () => {
     try {

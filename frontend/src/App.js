@@ -8,7 +8,7 @@ import './App.css';
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '349035022191-u6vlii5vhhifig720m8ovmmgm1es66ub.apps.googleusercontent.com';
 
 function AppContent() {
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (

@@ -8,6 +8,10 @@ require('dotenv').config();
 
 const app = express();
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Security middleware
 app.use(helmet());
 
@@ -22,9 +26,6 @@ app.use(limiter);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from frontend build
-app.use(express.static('frontend/build'));
 
 // Serve static files from Esportive Web directory (both with and without URL encoding)
 app.use('/Esportive Web', express.static('Esportive Web'));
@@ -58,9 +59,44 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
-// Serve React app for any non-API routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+// EJS Routes
+app.get('/', (req, res) => {
+  res.render('index', { 
+    title: 'Home',
+    customJS: 'script.js'
+  });
+});
+
+app.get('/login', (req, res) => {
+  res.render('login', { 
+    title: 'Sign-up',
+    bodyClass: 'flex flex-col min-h-screen items-center justify-center p-4',
+    googleSignIn: true,
+    customCSS: 'login.css',
+    customJS: 'login.js'
+  });
+});
+
+app.get('/tournaments', (req, res) => {
+  res.render('tournaments', { 
+    title: 'Tournaments',
+    customJS: 'tournaments.js'
+  });
+});
+
+app.get('/publish-tournament', (req, res) => {
+  res.render('publish-tournament', { 
+    title: 'Publish Tournament',
+    bodyClass: 'bg-black text-white min-h-screen flex flex-col',
+    customCSS: 'publish-tournament.css',
+    customJS: 'publish-tournament.js'
+  });
+});
+
+// Static pages routes (serve original HTML files for now)
+app.get('/pages/:page', (req, res) => {
+  const page = req.params.page;
+  res.sendFile(path.join(__dirname, 'Esportive Web', 'pages', `${page}.html`));
 });
 
 // Error handling middleware

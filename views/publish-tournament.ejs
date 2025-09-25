@@ -1,0 +1,66 @@
+<!-- Navbar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-black text-white px-4 py-6 lg:py-8 flex items-center justify-between">
+    <div class="flex items-center">
+        <a href="/tournaments" class="text-xl text-white focus:outline-none">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    <div class="flex-grow flex justify-center">
+        <img src="/Esportive%20Web/assets/navbar/logo.png" alt="Esportive Logo" class="h-8 lg:h-10">
+    </div>
+    <div class="flex items-center relative">
+        <% if (typeof user !== 'undefined' && user) { %>
+        <div class="relative">
+            <button id="profile-toggle" class="flex items-center space-x-2 focus:outline-none">
+                <% if (user.photoURL) { %>
+                <img src="<%= user.photoURL %>" alt="Profile" class="h-8 w-8 rounded-full border-2 border-red-600">
+                <% } else { %>
+                <i class="fas fa-user-circle text-2xl text-white"></i>
+                <% } %>
+            </button>
+            
+            <div id="profile-dropdown" class="absolute right-0 top-10 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                <a href="/publish-tournament" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">Publish Tournament</a>
+                <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700">Logout</button>
+            </div>
+        </div>
+        <% } else { %>
+        <a href="/login" class="text-2xl text-white focus:outline-none">
+            <i class="fas fa-user-circle"></i>
+        </a>
+        <% } %>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow pt-24 container mx-auto p-4 flex flex-col items-center justify-center text-center">
+    <div class="max-w-xl mx-auto p-8 rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">Publish Your Tournament</h1>
+        <p class="text-gray-400 mb-6">
+            To ensure all tournament information is accurate and verified, publishing is handled by our administrators. Please contact us on WhatsApp with the details of your tournament.
+        </p>
+        
+        <div class="space-y-4">
+            <a href="https://wa.me/7731987758?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Contact Admin 1</span>
+                </button>
+            </a>
+            <a href="https://wa.me/9599202634?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Contact Admin 2</span>
+                </button>
+            </a>
+            <a href="https://wa.me/7435800747?text=I+want+to+publish+a+tournament+in+Esportive" target="_blank" class="block">
+                <button class="w-full px-6 py-3 border-2 border-green-500 text-green-500 font-bold rounded-full text-lg hover:bg-green-500 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Contact Admin 3</span>
+                </button>
+            </a>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

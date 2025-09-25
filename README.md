@@ -146,30 +146,59 @@ To enable Google Sign-In functionality:
 ## Project Structure
 
 ```
-├── backend/
-│   ├── models/          # Mongoose models
-│   ├── routes/          # API routes
-│   ├── middleware/      # Custom middleware
-│   └── server.js        # Server entry point
-├── frontend/
+├── models/              # Mongoose models
+├── routes/              # API routes
+├── middleware/          # Custom middleware
+├── frontend/            # React frontend
 │   ├── public/          # Static files
 │   ├── src/
 │   │   ├── components/  # Reusable components
 │   │   ├── pages/       # Page components
 │   │   ├── context/     # React context
 │   │   └── utils/       # Utility functions
+├── Esportive Web/       # Static HTML pages (alternative frontend)
+│   ├── assets/          # Images and media
+│   ├── css/             # Stylesheets
+│   ├── js/              # JavaScript files
+│   └── *.html           # HTML pages
 ├── .env                 # Environment variables
-└── package.json         # Backend dependencies
+├── package.json         # Backend dependencies
+└── server.js            # Server entry point (serves both frontends)
 ```
 
 ## Deployment
 
-The application can be deployed to platforms like Heroku, Vercel, or any VPS:
+The application is designed for single-platform deployment, serving both frontend and backend on the same port:
 
-1. Set up environment variables on your hosting platform
-2. Configure MongoDB connection (MongoDB Atlas recommended for production)
-3. Build the frontend: `cd frontend && npm run build`
-4. Deploy the backend with the built frontend files
+### Quick Deployment (Recommended)
+1. Set up environment variables on your hosting platform:
+   ```env
+   PORT=5000
+   MONGODB_URI=mongodb://localhost:27017/esportive
+   JWT_SECRET=your_jwt_secret_key_here
+   GOOGLE_CLIENT_ID=your_google_client_id_here
+   NODE_ENV=production
+   ```
+
+2. Deploy to platforms like Heroku, Railway, or any VPS:
+   ```bash
+   # The app automatically builds the frontend during deployment
+   npm install
+   npm run build  # Builds the React frontend
+   npm start      # Starts the server serving both frontend and backend
+   ```
+
+### Manual Deployment
+1. Install dependencies: `npm install`
+2. Install frontend dependencies: `cd frontend && npm install`
+3. Build the frontend: `npm run build`
+4. Start the server: `npm start`
+
+### Access Points
+After deployment, both frontends are accessible on the same domain:
+- **React SPA**: `https://yourdomain.com/` (main application)
+- **Static HTML**: `https://yourdomain.com/Esportive%20Web/login.html` (alternative login)
+- **API**: `https://yourdomain.com/api/health` (backend endpoints)
 
 ## Contributing
 

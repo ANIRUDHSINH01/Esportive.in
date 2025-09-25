@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDthHTw69Olq2yM1YBRZqLor93zlQkJ3NY",
@@ -15,24 +15,60 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Check for existing user on page load
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is signed in, redirect to the tournaments page
-        window.location.href = "tournaments.html";
+// Check for existing user token
+const checkExistingAuth = () => {
+    const token = localStorage.getItem('esportive_token');
+    if (token) {
+        // Verify token with backend
+        fetch('/api/auth/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "tournaments.html";
+            } else {
+                localStorage.removeItem('esportive_token');
+            }
+        })
+        .catch(error => {
+            console.error('Token verification failed:', error);
+            localStorage.removeItem('esportive_token');
+        });
     }
-});
+};
+
+// Check auth state on page load
+checkExistingAuth();
 
 // Function to handle the Google Sign-In response
 window.handleCredentialResponse = async (response) => {
     try {
-        // Build a Firebase credential with the Google ID token.
-        const credential = GoogleAuthProvider.credential(response.credential);
+        console.log("Google credential received, sending to backend...");
+        
+        // Send credential to backend for verification
+        const backendResponse = await fetch('/api/auth/google-verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ credential: response.credential }),
+        });
 
-        // Sign in with the credential and redirect to tournaments page on success.
-        await signInWithCredential(auth, credential);
-
+        const data = await backendResponse.json();
+        
+        if (backendResponse.ok) {
+            // Store token and redirect
+            localStorage.setItem('esportive_token', data.token);
+            console.log("Login successful, redirecting...");
+            window.location.href = "tournaments.html";
+        } else {
+            console.error("Backend authentication failed:", data.message);
+            alert("Authentication failed: " + data.message);
+        }
     } catch (error) {
         console.error("Error during Google Sign-in:", error);
+        alert("Sign-in failed. Please try again.");
     }
 }

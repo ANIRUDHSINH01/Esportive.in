@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const auth = async (req, res, next) => {
@@ -10,6 +11,12 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Check if database is available
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ message: 'Database temporarily unavailable' });
+    }
+    
     const user = await User.findById(decoded.id).select('-password');
     
     if (!user) {
@@ -19,7 +26,11 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Token is not valid' });
+    }
+    console.error('Auth middleware error:', error);
+    res.status(500).json({ message: 'Server error during authentication' });
   }
 };
 

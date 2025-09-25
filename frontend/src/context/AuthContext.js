@@ -76,9 +76,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (googleData) => {
+  const googleLogin = async (authData) => {
     try {
-      const response = await axios.post('/api/auth/google', googleData);
+      // If we already have token and user from the verification
+      if (authData.token && authData.user) {
+        localStorage.setItem('token', authData.token);
+        setToken(authData.token);
+        setUser(authData.user);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${authData.token}`;
+        return { success: true };
+      }
+      
+      // Fallback to the old method if needed
+      const response = await axios.post('/api/auth/google', authData);
       const { token, user } = response.data;
       
       localStorage.setItem('token', token);

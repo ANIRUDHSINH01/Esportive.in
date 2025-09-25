@@ -18,13 +18,43 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 
-// Listen for auth state changes to update UI
-onAuthStateChanged(auth, (user) => {
+// Check authentication and get user info
+const checkAuth = async () => {
+    const token = localStorage.getItem('esportive_token');
+    if (!token) {
+        window.location.href = 'index.html';
+        return null;
+    }
+
+    try {
+        const response = await fetch('/api/auth/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const userData = await response.json();
+            return userData.user;
+        } else {
+            localStorage.removeItem('esportive_token');
+            window.location.href = 'index.html';
+            return null;
+        }
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        localStorage.removeItem('esportive_token');
+        window.location.href = 'index.html';
+        return null;
+    }
+};
+
+// Update UI with user info
+const updateUserUI = (user) => {
     const profileContainer = document.getElementById('profile-container');
     const profileDropdown = document.getElementById('profile-dropdown');
     
-    if (user) {
-        // User is signed in, update UI
+    if (user && profileContainer) {
         if (user.photoURL) {
             profileContainer.innerHTML = `
                 <img src="${user.photoURL}" alt="User Profile" class="h-8 w-8 rounded-full border-2 border-red-600 cursor-pointer">
@@ -36,11 +66,17 @@ onAuthStateChanged(auth, (user) => {
         }
 
         profileContainer.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
+            if (profileDropdown) {
+                profileDropdown.classList.toggle('hidden');
+            }
         });
-    } else {
-        // User is not signed in, redirect to index.html
-        window.location.href = 'index.html';
+    }
+};
+
+// Initialize authentication
+checkAuth().then(user => {
+    if (user) {
+        updateUserUI(user);
     }
 });
 
@@ -50,10 +86,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', async () => {
             try {
-                await signOut(auth);
+                // Clear local storage
+                localStorage.removeItem('esportive_token');
+                
+                // Sign out from Firebase if needed
+                if (auth.currentUser) {
+                    await signOut(auth);
+                }
+                
+                // Redirect to home
                 window.location.href = 'index.html';
             } catch (error) {
                 console.error("Error signing out:", error);
+                // Force redirect even if there's an error
+                localStorage.removeItem('esportive_token');
+                window.location.href = 'index.html';
             }
         });
     }

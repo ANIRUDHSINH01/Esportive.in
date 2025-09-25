@@ -5,8 +5,10 @@ A full-stack esports tournament platform built with the MERN stack (MongoDB, Exp
 ## Features
 
 - **User Authentication**: JWT-based authentication with support for email/password and Google OAuth
+- **Google Sign-In Integration**: Both React and static HTML implementations with secure backend verification
 - **Tournament Management**: Create, view, and register for tournaments
 - **Admin Dashboard**: Admin users can publish and manage tournaments
+- **Dual Frontend Support**: Both React SPA and static HTML implementations
 - **Responsive Design**: Mobile-first responsive UI using TailwindCSS
 - **Real-time Updates**: Tournament participant counts and status updates
 - **Game Filtering**: Filter tournaments by game type
@@ -16,10 +18,11 @@ A full-stack esports tournament platform built with the MERN stack (MongoDB, Exp
 ### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
-- **MongoDB** - Database
+- **MongoDB** - Database (optional, graceful degradation)
 - **Mongoose** - ODM for MongoDB
 - **JWT** - Authentication
 - **bcryptjs** - Password hashing
+- **Google Auth Library** - OAuth token verification
 
 ### Frontend
 - **React** - Frontend library
@@ -61,6 +64,7 @@ Create a `.env` file in the root directory:
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/esportive
 JWT_SECRET=your_jwt_secret_key_here
+GOOGLE_CLIENT_ID=your_google_client_id_here
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 ```
@@ -90,12 +94,40 @@ cd ..
 npm start
 ```
 
+## Google OAuth Setup
+
+To enable Google Sign-In functionality:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing
+3. Enable Google+ API or Google Sign-In API
+4. Create OAuth 2.0 credentials
+5. Add authorized JavaScript origins:
+   - `http://localhost:5000` (development)
+   - Your production domain
+6. Update the client ID in:
+   - `.env` file (`GOOGLE_CLIENT_ID`)
+   - `frontend/src/components/GoogleSignIn.js`
+   - `Esportive Web/login.html`
+
+## Access Points
+
+### React Frontend
+- Main app: `http://localhost:5000`
+- Login page: `http://localhost:5000/login`
+- Tournaments: `http://localhost:5000/tournaments`
+
+### Static HTML
+- Login: `http://localhost:5000/Esportive%20Web/login.html`
+- Tournaments: `http://localhost:5000/Esportive%20Web/tournaments.html`
+
 ## API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
-- `POST /api/auth/google` - Google OAuth login
+- `POST /api/auth/google` - Google OAuth login (legacy)
+- `POST /api/auth/google-verify` - Google JWT token verification
 - `GET /api/auth/me` - Get current user
 
 ### Tournaments

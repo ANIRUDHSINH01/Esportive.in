@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GoogleSignIn from '../components/GoogleSignIn';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -54,6 +55,9 @@ const Login = () => {
             {isLogin ? 'Sign in to your account' : 'Create your account'}
           </h2>
         </div>
+        
+        {/* Google Sign-In Component */}
+        <GoogleSignIn />
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">

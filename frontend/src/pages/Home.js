@@ -86,10 +86,10 @@ const Home = () => {
             <a href="/faq" className="hover:text-white">FAQ</a>
           </div>
           <div className="flex justify-center space-x-4 text-lg mb-4">
-            <a href="#" className="hover:text-white"><i className="fab fa-instagram"></i></a>
-            <a href="#" className="hover:text-white"><i className="fab fa-discord"></i></a>
-            <a href="#" className="hover:text-white"><i className="fab fa-youtube"></i></a>
-            <a href="#" className="hover:text-white"><i className="fab fa-x-twitter"></i></a>
+            <a href="https://instagram.com" className="hover:text-white" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
+            <a href="https://discord.com" className="hover:text-white" target="_blank" rel="noopener noreferrer"><i className="fab fa-discord"></i></a>
+            <a href="https://youtube.com" className="hover:text-white" target="_blank" rel="noopener noreferrer"><i className="fab fa-youtube"></i></a>
+            <a href="https://x.com" className="hover:text-white" target="_blank" rel="noopener noreferrer"><i className="fab fa-x-twitter"></i></a>
           </div>
           <p className="text-xs">&copy; 2025 Esportive. All rights reserved.</p>
         </div>

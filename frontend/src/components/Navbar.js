@@ -104,11 +104,11 @@ const Navbar = () => {
               <li className="mb-2">
                 <div className="text-xl font-semibold py-2">Our Socials</div>
                 <ul className="pl-4 mt-1 space-y-2">
-                  <li><a href="#" className="text-base block hover:text-gray-400">Instagram</a></li>
-                  <li><a href="#" className="text-base block hover:text-gray-400">Discord</a></li>
-                  <li><a href="#" className="text-base block hover:text-gray-400">YouTube</a></li>
-                  <li><a href="#" className="text-base block hover:text-gray-400">X</a></li>
-                  <li><a href="#" className="text-base block hover:text-gray-400">WhatsApp Channel</a></li>
+                  <li><a href="https://instagram.com" className="text-base block hover:text-gray-400" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                  <li><a href="https://discord.com" className="text-base block hover:text-gray-400" target="_blank" rel="noopener noreferrer">Discord</a></li>
+                  <li><a href="https://youtube.com" className="text-base block hover:text-gray-400" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                  <li><a href="https://x.com" className="text-base block hover:text-gray-400" target="_blank" rel="noopener noreferrer">X</a></li>
+                  <li><a href="https://whatsapp.com/channel/0029VacNiAqEUJt4LBNfRV27" className="text-base block hover:text-gray-400" target="_blank" rel="noopener noreferrer">WhatsApp Channel</a></li>
                 </ul>
               </li>
             </ul>

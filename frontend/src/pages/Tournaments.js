@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Tournaments = () => {
-  const [tournaments, setTournaments] = useState([]);
   const [filteredTournaments, setFilteredTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedGame, setSelectedGame] = useState('');
@@ -20,11 +19,31 @@ const Tournaments = () => {
   ];
 
   useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        const params = {
+          page: currentPage,
+          limit: 10
+        };
+        if (selectedGame) params.game = selectedGame;
+
+        const response = await axios.get('/api/tournaments', { params });
+        setFilteredTournaments(response.data.tournaments);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error('Error fetching tournaments:', error);
+      }
+      setLoading(false);
+    };
+
     fetchTournaments();
   }, [currentPage, selectedGame]);
 
-  const fetchTournaments = async () => {
+  const registerForTournament = async (tournamentId) => {
     try {
+      await axios.post(`/api/tournaments/${tournamentId}/register`);
+      alert('Successfully registered for tournament!');
+      // Refresh tournaments after registration
       const params = {
         page: currentPage,
         limit: 10
@@ -32,25 +51,7 @@ const Tournaments = () => {
       if (selectedGame) params.game = selectedGame;
 
       const response = await axios.get('/api/tournaments', { params });
-      setTournaments(response.data.tournaments);
       setFilteredTournaments(response.data.tournaments);
-      setTotalPages(response.data.totalPages);
-    } catch (error) {
-      console.error('Error fetching tournaments:', error);
-    }
-    setLoading(false);
-  };
-
-  const handleGameFilter = (game) => {
-    setSelectedGame(game);
-    setCurrentPage(1);
-  };
-
-  const registerForTournament = async (tournamentId) => {
-    try {
-      await axios.post(`/api/tournaments/${tournamentId}/register`);
-      alert('Successfully registered for tournament!');
-      fetchTournaments(); // Refresh to show updated participant count
     } catch (error) {
       alert(error.response?.data?.message || 'Registration failed');
     }
@@ -73,7 +74,10 @@ const Tournaments = () => {
         {/* Game Filter */}
         <select
           value={selectedGame}
-          onChange={(e) => handleGameFilter(e.target.value)}
+          onChange={(e) => {
+            setSelectedGame(e.target.value);
+            setCurrentPage(1);
+          }}
           className="px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:border-red-500"
         >
           <option value="">All Games</option>

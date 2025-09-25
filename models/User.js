@@ -24,9 +24,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     sparse: true // Allow multiple null values but unique non-null values
   },
+  picture: {
+    type: String,
+    default: ''
+  },
   photoURL: {
     type: String,
     default: ''
+  },
+  refreshToken: {
+    type: String,
+    default: null
   },
   isAdmin: {
     type: Boolean,

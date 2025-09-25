@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const { auth } = require('../middleware/auth');
@@ -8,6 +9,13 @@ const router = express.Router();
 
 // Initialize Google OAuth2 client
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Helper function to check database connectivity
+const checkDatabaseConnection = () => {
+  if (mongoose.connection.readyState !== 1) {
+    throw new Error('Database connection unavailable');
+  }
+};
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -19,7 +27,14 @@ const generateToken = (id) => {
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
+    checkDatabaseConnection();
+    
     const { name, email, password } = req.body;
+
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Please provide name, email, and password' });
+    }
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -49,8 +64,11 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration error:', error);
+    if (error.message === 'Database connection unavailable') {
+      return res.status(503).json({ message: 'Service temporarily unavailable. Please try again later.' });
+    }
+    res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
@@ -59,7 +77,14 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   try {
+    checkDatabaseConnection();
+    
     const { email, password } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide email and password' });
+    }
 
     // Check if user exists
     const user = await User.findOne({ email });
@@ -86,8 +111,11 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login error:', error);
+    if (error.message === 'Database connection unavailable') {
+      return res.status(503).json({ message: 'Service temporarily unavailable. Please try again later.' });
+    }
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 
@@ -96,6 +124,8 @@ router.post('/login', async (req, res) => {
 // @access  Public
 router.post('/google-verify', async (req, res) => {
   try {
+    checkDatabaseConnection();
+    
     const { credential } = req.body;
 
     if (!credential) {
@@ -158,6 +188,9 @@ router.post('/google-verify', async (req, res) => {
     });
   } catch (error) {
     console.error('Google token verification error:', error);
+    if (error.message === 'Database connection unavailable') {
+      return res.status(503).json({ message: 'Service temporarily unavailable. Please try again later.' });
+    }
     res.status(400).json({ message: 'Invalid Google token' });
   }
 });
@@ -167,6 +200,8 @@ router.post('/google-verify', async (req, res) => {
 // @access  Public
 router.post('/google', async (req, res) => {
   try {
+    checkDatabaseConnection();
+    
     const { googleId, email, name, photoURL } = req.body;
 
     // Validate required fields
@@ -220,6 +255,9 @@ router.post('/google', async (req, res) => {
     });
   } catch (error) {
     console.error('Google auth error:', error);
+    if (error.message === 'Database connection unavailable') {
+      return res.status(503).json({ message: 'Service temporarily unavailable. Please try again later.' });
+    }
     res.status(500).json({ message: 'Server error during Google authentication' });
   }
 });

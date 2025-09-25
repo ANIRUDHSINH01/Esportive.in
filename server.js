@@ -23,8 +23,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from frontend
+// Serve static files from frontend build
 app.use(express.static('frontend/build'));
+
+// Serve static files from Esportive Web directory (both with and without URL encoding)
+app.use('/Esportive Web', express.static('Esportive Web'));
+app.use('/Esportive%20Web', express.static('Esportive Web'));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/esportive';

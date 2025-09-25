@@ -109,7 +109,7 @@ CLIENT_URL=http://localhost:3000
 
 ### 3. Frontend Environment
 
-Create `frontend/.env`:
+The React frontend dependencies are now included in the main package.json. If you plan to use the React frontend, create `frontend/.env`:
 
 ```env
 REACT_APP_API_URL=http://localhost:5000/api
@@ -119,27 +119,23 @@ REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id-here
 ### 4. Install Dependencies
 
 ```bash
-# Backend dependencies
-npm install
-
-# Frontend dependencies
-cd frontend
+# All dependencies are now in one place
 npm install
 ```
 
 ### 5. Start the Application
 
 ```bash
-# Terminal 1: Start backend server
+# Start backend server (serves EJS templates by default)
 npm start
 
-# Terminal 2: Start frontend development server
-cd frontend
-npm start
+# Optional: Start React frontend development server
+npm run frontend:dev
 ```
 
 The application will be available at:
-- Frontend: http://localhost:3000
+- EJS Frontend (default): http://localhost:5000
+- React Frontend (optional): http://localhost:3000  
 - Backend API: http://localhost:5000
 
 ## 💻 Usage Examples

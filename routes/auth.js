@@ -1,9 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Initialize Google OAuth2 client
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -87,20 +91,46 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/google
-// @desc    Google OAuth login
+// @route   POST /api/auth/google-verify
+// @desc    Verify Google JWT token and login
 // @access  Public
-router.post('/google', async (req, res) => {
+router.post('/google-verify', async (req, res) => {
   try {
-    const { googleId, email, name, photoURL } = req.body;
+    const { credential } = req.body;
 
+    if (!credential) {
+      return res.status(400).json({ message: 'Google credential token is required' });
+    }
+
+    // Verify the token with Google
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture: photoURL } = payload;
+
+    // Use the existing Google auth logic
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (user) {
       // Update user info if needed
+      let updated = false;
       if (!user.googleId) {
         user.googleId = googleId;
+        updated = true;
+      }
+      if (photoURL && user.photoURL !== photoURL) {
         user.photoURL = photoURL;
+        updated = true;
+      }
+      if (user.name !== name) {
+        user.name = name;
+        updated = true;
+      }
+      
+      if (updated) {
         await user.save();
       }
     } else {
@@ -109,7 +139,7 @@ router.post('/google', async (req, res) => {
         googleId,
         email,
         name,
-        photoURL
+        photoURL: photoURL || ''
       });
       await user.save();
     }
@@ -127,8 +157,70 @@ router.post('/google', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Google token verification error:', error);
+    res.status(400).json({ message: 'Invalid Google token' });
+  }
+});
+
+// @route   POST /api/auth/google
+// @desc    Google OAuth login
+// @access  Public
+router.post('/google', async (req, res) => {
+  try {
+    const { googleId, email, name, photoURL } = req.body;
+
+    // Validate required fields
+    if (!googleId || !email || !name) {
+      return res.status(400).json({ message: 'Missing required Google user data' });
+    }
+
+    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+    if (user) {
+      // Update user info if needed
+      let updated = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        updated = true;
+      }
+      if (photoURL && user.photoURL !== photoURL) {
+        user.photoURL = photoURL;
+        updated = true;
+      }
+      if (user.name !== name) {
+        user.name = name;
+        updated = true;
+      }
+      
+      if (updated) {
+        await user.save();
+      }
+    } else {
+      // Create new user
+      user = new User({
+        googleId,
+        email,
+        name,
+        photoURL: photoURL || ''
+      });
+      await user.save();
+    }
+
+    const token = generateToken(user._id);
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        photoURL: user.photoURL,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({ message: 'Server error during Google authentication' });
   }
 });
 

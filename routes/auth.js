@@ -17,9 +17,14 @@ const checkDatabaseConnection = () => {
   }
 };
 
-// Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+// Generate JWT Access Token (15 minutes)
+const generateAccessToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+};
+
+// Generate JWT Refresh Token (7 days)
+const generateRefreshToken = (id) => {
+  return jwt.sign({ id }, process.env.REFRESH_SECRET || process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
 // @route   POST /api/auth/register
@@ -51,15 +56,28 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    const token = generateToken(user._id);
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    // Store refresh token in database
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set refresh token in httpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
 
     res.status(201).json({
-      token,
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
+        picture: user.picture || user.photoURL,
         isAdmin: user.isAdmin
       }
     });
@@ -98,15 +116,28 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = generateToken(user._id);
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    // Store refresh token in database
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set refresh token in httpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
 
     res.json({
-      token,
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
+        picture: user.picture || user.photoURL,
         isAdmin: user.isAdmin
       }
     });
@@ -119,29 +150,29 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/google-verify
-// @desc    Verify Google JWT token and login
+// @route   POST /auth/google
+// @desc    Accept Google ID token, verify it, create/find user in MongoDB, return JWT access token + set refresh token in httpOnly cookie
 // @access  Public
-router.post('/google-verify', async (req, res) => {
+router.post('/google', async (req, res) => {
   try {
     checkDatabaseConnection();
     
-    const { credential } = req.body;
+    const { idToken } = req.body;
 
-    if (!credential) {
-      return res.status(400).json({ message: 'Google credential token is required' });
+    if (!idToken) {
+      return res.status(400).json({ message: 'Google ID token is required' });
     }
 
     // Verify the token with Google
     const ticket = await client.verifyIdToken({
-      idToken: credential,
+      idToken: idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
-    const { sub: googleId, email, name, picture: photoURL } = payload;
+    const { sub: googleId, email, name, picture } = payload;
 
-    // Use the existing Google auth logic
+    // Find or create user
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (user) {
@@ -151,8 +182,12 @@ router.post('/google-verify', async (req, res) => {
         user.googleId = googleId;
         updated = true;
       }
-      if (photoURL && user.photoURL !== photoURL) {
-        user.photoURL = photoURL;
+      if (picture && user.picture !== picture) {
+        user.picture = picture;
+        updated = true;
+      }
+      if (picture && user.photoURL !== picture) {
+        user.photoURL = picture;
         updated = true;
       }
       if (user.name !== name) {
@@ -169,20 +204,34 @@ router.post('/google-verify', async (req, res) => {
         googleId,
         email,
         name,
-        photoURL: photoURL || ''
+        picture: picture || '',
+        photoURL: picture || ''
       });
       await user.save();
     }
 
-    const token = generateToken(user._id);
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    // Store refresh token in database
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set refresh token in httpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
 
     res.json({
-      token,
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
+        picture: user.picture,
         isAdmin: user.isAdmin
       }
     });
@@ -195,89 +244,100 @@ router.post('/google-verify', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/google
-// @desc    Google OAuth login
+// @route   POST /auth/refresh
+// @desc    Verify refresh token (from cookie), return new access token
 // @access  Public
-router.post('/google', async (req, res) => {
+router.post('/refresh', async (req, res) => {
   try {
     checkDatabaseConnection();
+
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'Refresh token not found' });
+    }
+
+    // Verify refresh token
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET || process.env.JWT_SECRET);
     
-    const { googleId, email, name, photoURL } = req.body;
-
-    // Validate required fields
-    if (!googleId || !email || !name) {
-      return res.status(400).json({ message: 'Missing required Google user data' });
+    // Find user and check if refresh token matches
+    const user = await User.findById(decoded.id);
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({ message: 'Invalid refresh token' });
     }
 
-    let user = await User.findOne({ $or: [{ googleId }, { email }] });
-
-    if (user) {
-      // Update user info if needed
-      let updated = false;
-      if (!user.googleId) {
-        user.googleId = googleId;
-        updated = true;
-      }
-      if (photoURL && user.photoURL !== photoURL) {
-        user.photoURL = photoURL;
-        updated = true;
-      }
-      if (user.name !== name) {
-        user.name = name;
-        updated = true;
-      }
-      
-      if (updated) {
-        await user.save();
-      }
-    } else {
-      // Create new user
-      user = new User({
-        googleId,
-        email,
-        name,
-        photoURL: photoURL || ''
-      });
-      await user.save();
-    }
-
-    const token = generateToken(user._id);
+    // Generate new access token
+    const accessToken = generateAccessToken(user._id);
 
     res.json({
-      token,
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
+        picture: user.picture || user.photoURL,
         isAdmin: user.isAdmin
       }
     });
   } catch (error) {
-    console.error('Google auth error:', error);
+    console.error('Refresh token error:', error);
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Invalid or expired refresh token' });
+    }
     if (error.message === 'Database connection unavailable') {
       return res.status(503).json({ message: 'Service temporarily unavailable. Please try again later.' });
     }
-    res.status(500).json({ message: 'Server error during Google authentication' });
+    res.status(500).json({ message: 'Server error during token refresh' });
   }
 });
 
-// @route   GET /api/auth/me
-// @desc    Get current user
+// @route   POST /auth/logout
+// @desc    Clear refresh token (cookie + DB)
+// @access  Public
+router.post('/logout', async (req, res) => {
+  try {
+    checkDatabaseConnection();
+
+    const refreshToken = req.cookies.refreshToken;
+
+    if (refreshToken) {
+      // Find user and clear refresh token from database
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET || process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (user) {
+        user.refreshToken = null;
+        await user.save();
+      }
+    }
+
+    // Clear refresh token cookie
+    res.clearCookie('refreshToken');
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Clear cookie even if there's an error
+    res.clearCookie('refreshToken');
+    res.json({ message: 'Logged out successfully' });
+  }
+});
+
+// @route   GET /profile
+// @desc    Protected route that requires access token
 // @access  Private
-router.get('/me', auth, async (req, res) => {
+router.get('/profile', auth, async (req, res) => {
   try {
     res.json({
       user: {
         id: req.user._id,
         name: req.user.name,
         email: req.user.email,
-        photoURL: req.user.photoURL,
-        isAdmin: req.user.isAdmin
+        picture: req.user.picture || req.user.photoURL,
+        isAdmin: req.user.isAdmin,
+        registeredTournaments: req.user.registeredTournaments
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('Profile error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -44,19 +44,12 @@ git clone <repository-url>
 cd Esportive.in
 ```
 
-2. Install backend dependencies:
+2. Install all dependencies:
 ```bash
 npm install
 ```
 
-3. Install frontend dependencies:
-```bash
-cd frontend
-npm install
-cd ..
-```
-
-4. Set up environment variables:
+3. Set up environment variables:
 Create a `.env` file in the root directory:
 ```env
 PORT=5000
@@ -64,31 +57,29 @@ MONGODB_URI=mongodb://localhost:27017/esportive
 JWT_SECRET=your_jwt_secret_key_here
 GOOGLE_CLIENT_ID=your_google_client_id_here
 NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
+CLIENT_URL=http://localhost:3000
 ```
 
-5. Start MongoDB service (if running locally)
+4. Start MongoDB service (if running locally)
 
-6. Run the application:
+5. Run the application:
 
-Development mode (both frontend and backend):
+Development mode (EJS templates - primary frontend):
 ```bash
-# Terminal 1 - Backend
+npm run dev
+```
+
+Optional React frontend development:
+```bash
+# Terminal 1 - Backend server
 npm run dev
 
-# Terminal 2 - Frontend
-cd frontend
-npm start
+# Terminal 2 - React frontend (if needed)
+npm run frontend:dev
 ```
 
 Production mode:
 ```bash
-# Build frontend
-cd frontend
-npm run build
-cd ..
-
-# Start server
 npm start
 ```
 
@@ -147,17 +138,20 @@ To enable Google Sign-In functionality:
 ├── models/              # Mongoose models
 ├── routes/              # API routes
 ├── middleware/          # Custom middleware
-├── views/               # EJS templates
+├── views/               # EJS templates (primary frontend)
 │   ├── partials/        # Reusable EJS partials  
 │   └── pages/           # Page templates
+├── frontend/            # React frontend source (optional)
+│   ├── src/             # React components and hooks
+│   └── public/          # React public assets
 ├── Esportive Web/       # Static HTML pages (alternative frontend)
 │   ├── assets/          # Images and media
 │   ├── css/             # Stylesheets
 │   ├── js/              # JavaScript files
 │   └── *.html           # HTML pages
 ├── .env                 # Environment variables
-├── package.json         # Backend dependencies
-└── server.js            # Server entry point (serves both frontends)
+├── package.json         # All dependencies (unified)
+└── server.js            # Server entry point (serves all frontends)
 ```
 
 ## Deployment
@@ -176,13 +170,13 @@ The application is designed for single-platform deployment, serving both fronten
 
 2. Deploy to platforms like Heroku, Railway, or any VPS:
    ```bash
-   # Simple deployment - no build step required for EJS
+   # Single command deployment - unified dependencies
    npm install
    npm start      # Starts the server serving EJS templates and backend
    ```
 
 ### Manual Deployment
-1. Install dependencies: `npm install`
+1. Install all dependencies: `npm install`
 2. Start the server: `npm start`
 
 ### Access Points

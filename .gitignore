@@ -1,10 +1,16 @@
 # Dependencies
 node_modules/
-frontend/node_modules/
+
+# Frontend symlink to parent node_modules
+frontend/node_modules
 
 # Production builds
 frontend/build/
 dist/
+
+# Package backups (created during consolidation)
+frontend/package.json.backup
+frontend/package-lock.json.backup
 
 # Environment variables
 .env

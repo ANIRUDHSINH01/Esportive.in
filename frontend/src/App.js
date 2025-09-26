@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Profile from './components/Profile';
 import './App.css';
 
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '349035022191-u6vlii5vhhifig720m8ovmmgm1es66ub.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '439864037476-a7itp34do4lp601q1v0vuvnugogkqi9q.apps.googleusercontent.com';
 
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
